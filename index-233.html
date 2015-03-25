@@ -1,0 +1,991 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- Code Developed by Mrudang Mathuria -->
+
+<head>
+
+<title>BoostYourEarning.Com</title>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+<meta name="description" content="Boost Your Earning website" />
+<meta name="keywords" content="Boost Your Earning products names/>
+<meta name="copyright" content="Boost Your Earning "/>
+<meta name="robots" content="all" />
+
+<script type="text/javascript">
+	var banner_delay = 6000;
+</script> 
+
+
+<link rel="icon" 
+      type="image/png" 
+      href="favicon.png">
+
+
+<!-- including css styles -->
+
+
+
+<style type="text/css">
+body {
+	background: #0F0D0D;
+	padding: 30px 0 0 50px;
+}
+div.sc_menu_wrapper {
+	position: relative; 	
+	height: 290px;
+	/* Make bigger than a photo, because we need a place for a scrollbar. */
+	width: 264px;
+	
+	margin-top: 1px;
+	overflow: auto;
+}
+div.sc_menu {
+	padding: 15px 0;
+}
+.sc_menu a {
+	display: block;
+	margin-bottom: 5px;
+	width: 272px;
+	
+	border: 2px rgb(79, 79, 79) solid;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 1px;		
+	
+	/* When image support is turned off */
+	color: #fff;
+	background: rgb(79, 79, 79);	
+}
+.sc_menu a:hover {
+	border-color: rgb(130, 130, 130);
+
+}
+.sc_menu img {
+	display: block;
+	border: none;
+}
+
+.sc_menu_wrapper .loading {
+	position: absolute;
+	top: 50px;
+	left: 10px;
+	
+	margin: 0 auto;
+	padding: 10px;
+
+	width: 100px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;	
+	
+	text-align: center;
+	color: #fff;
+	border: 1px solid rgb(79, 79, 79);
+	background: #1F1D1D;
+}
+/* Styling tooltip */
+.sc_menu_tooltip {
+	display: block;
+	position: absolute;
+	
+	padding: 6px;
+	font-size: 12px;	
+	color: #fff;
+	
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;	
+	
+	border: 1px solid rgb(79, 79, 79);
+	background: rgb(0, 0, 0);
+	/* Make background a bit transparent for browsers that support rgba */	
+	background: rgba(0, 0, 0, 0.5);
+}
+
+/* Here are styles for a link to an article. Not for you :) */
+#back {
+	margin-left: 8px;
+	color: gray;
+	font-size: 18px;
+	text-decoration: none;
+}
+#back:hover {
+	text-decoration: underline;
+}
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js" type="text/javascript"></script>
+<script type= "text/javascript">/*<![CDATA[*/
+
+function makeScrollable(wrapper, scrollable){
+	// Get jQuery elements
+	var wrapper = $(wrapper), scrollable = $(scrollable);
+	
+	// Hide images until they are not loaded
+	scrollable.hide();
+	var loading = $('<div class="loading">Loading...</div>').appendTo(wrapper);
+	
+	// Set function that will check if all images are loaded
+	var interval = setInterval(function(){
+		var images = scrollable.find('img');
+		var completed = 0;
+		
+		// Counts number of images that are succesfully loaded
+		images.each(function(){
+			if (this.complete) completed++;	
+		});
+		
+		if (completed == images.length){
+			clearInterval(interval);
+			// Timeout added to fix problem with Chrome
+			setTimeout(function(){
+				
+				loading.hide();
+				// Remove scrollbars	
+				wrapper.css({overflow: 'hidden'});						
+				
+				scrollable.slideDown('slow', function(){
+					enable();	
+				});					
+			}, 1000);	
+		}
+	}, 100);
+	
+	function enable(){
+		// height of area at the top at bottom, that don't respond to mousemove
+		var inactiveMargin = 99;					
+		// Cache for performance
+		var wrapperWidth = wrapper.width();
+		var wrapperHeight = wrapper.height();
+		// Using outer height to include padding too
+		var scrollableHeight = scrollable.outerHeight() + 2*inactiveMargin;
+		// Do not cache wrapperOffset, because it can change when user resizes window
+		// We could use onresize event, but it's just not worth doing that 
+		// var wrapperOffset = wrapper.offset();
+		
+		// Create a invisible tooltip
+		var tooltip = $('<div class="sc_menu_tooltip"></div>')
+			.css('opacity', 0)
+			.appendTo(wrapper);
+	
+		// Save menu titles
+		scrollable.find('a').each(function(){				
+			$(this).data('tooltipText', this.title);				
+		});
+		
+		// Remove default tooltip
+		scrollable.find('a').removeAttr('title');		
+		// Remove default tooltip in IE
+		scrollable.find('img').removeAttr('alt');	
+		
+		var lastTarget;
+		//When user move mouse over menu			
+		wrapper.mousemove(function(e){
+			// Save target
+			lastTarget = e.target;
+
+			var wrapperOffset = wrapper.offset();
+		
+			var tooltipLeft = e.pageX - wrapperOffset.left;
+			// Do not let tooltip to move out of menu.
+			// Because overflow is set to hidden, we will not be able too see it 
+			tooltipLeft = Math.min(tooltipLeft, wrapperWidth - 75); //tooltip.outerWidth());
+			
+			var tooltipTop = e.pageY - wrapperOffset.top + wrapper.scrollTop() - 40;
+			// Move tooltip under the mouse when we are in the higher part of the menu
+			if (e.pageY - wrapperOffset.top < wrapperHeight/2){
+				tooltipTop += 80;
+			}				
+			tooltip.css({top: tooltipTop, left: tooltipLeft});				
+			
+			// Scroll menu
+			var top = (e.pageY -  wrapperOffset.top) * (scrollableHeight - wrapperHeight) / wrapperHeight - inactiveMargin;
+			if (top < 0){
+				top = 0;
+			}			
+			wrapper.scrollTop(top);
+		});
+		
+		// Setting interval helps solving perfomance problems in IE
+		var interval = setInterval(function(){
+			if (!lastTarget) return;	
+										
+			var currentText = tooltip.text();
+			
+			if (lastTarget.nodeName == 'IMG'){					
+				// We've attached data to a link, not image
+				var newText = $(lastTarget).parent().data('tooltipText');
+
+				// Show tooltip with the new text
+				if (currentText != newText) {
+					tooltip
+						.stop(true)
+						.css('opacity', 0)	
+						.text(newText)
+						.animate({opacity: 1}, 1000);
+				}					
+			}
+		}, 200);
+		
+		// Hide tooltip when leaving menu
+		wrapper.mouseleave(function(){
+			lastTarget = false;
+			tooltip.stop(true).css('opacity', 0).text('');
+		});			
+		
+		/*
+		//Usage of hover event resulted in performance problems
+		scrollable.find('a').hover(function(){
+			tooltip
+				.stop()
+				.css('opacity', 0)
+				.text($(this).data('tooltipText'))
+				.animate({opacity: 1}, 1000);
+	
+		}, function(){
+			tooltip
+				.stop()
+				.animate({opacity: 0}, 300);
+		});
+		*/			
+	}
+}
+	
+$(function(){	
+	makeScrollable("div.sc_menu_wrapper", "div.sc_menu");
+});
+/*]]>*/</script>
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" type="text/css" href="style.css" />
+<!--[if (gte IE 7)|(!IE)]><!-->
+<link rel="stylesheet" type="text/css" href="menu.css" />
+<!--<![endif]-->
+
+<!--[if lt IE 7]>
+<link rel="stylesheet" type="text/css" href="menuie6.css" />
+<![endif]-->
+
+
+<!-- including javascripts (jquery, swfObject, prettyPhoto) -->
+
+<script type="text/javascript" src="js/jquery-1.4.min.js"></script>
+
+<script type="text/javascript" src="js/superfish.js"></script>
+<script type="text/javascript" src="js/jquery.cycle.min.js"></script>
+<script type="text/javascript" src="js/cufon.js"></script>
+<script type="text/javascript" src="js/Century_Gothic_400.font.js"></script>
+<script type="text/javascript" src="js/custom.js"></script> 
+<script type="text/javascript" src="js/jquery.prettyPhoto.js"></script>
+
+
+
+<!--[if IE 6]>
+	<script src="js/DD_belatedPNG_0.0.8a-min.js"></script>
+	<script>
+		DD_belatedPNG.fix('img, .menu_container, .main_menu li .hover, .main_menu li ul, #recentimages li, #recentimages li .hover, .left_shadow, .right_shadow, .container_left_shadow, .container_right_shadow, .submit_bg, .container_page_left_shadow, .container_page_right_shadow, .container_portfolio_left_shadow, .container_portfolio_right_shadow, .portfolio_zoom');
+	</script>
+<![endif]-->
+
+</head>
+
+
+
+
+<body width="100%">
+
+<!-- begin header -->
+<div id="header" >
+
+	<!-- begin header background -->
+	<div class="header_bg">
+	
+		<!-- begin header content -->
+		<div class="header_container">
+		<div class="header_content_topading"></div>
+			
+			
+			
+			
+		
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			<!-- begin main menu -->
+			<!-- begin main menu -->
+			
+			<!--______________________________________________________________________________-->
+
+
+			<!-- begin------------------- main------------------- menu -->
+			<div class="menu_container">
+
+				<div class="menu_items">
+
+					
+					<ul class="main_menu">
+
+
+						<li><a href="index.aspx">Home</a><br /><span>Welcome</span></li>
+						<li><a href="#.html">Our Specialities</a><br /><span>what we offer</span>
+							<ul>
+								<li><a href="#.html">My Expense Manager</a></li>
+
+								<li><a href="#.html">My Income Manager</a></li>
+
+								<li><a href="#.html">My Assets Manager</a></li>
+
+								<li><a href="#">My Tax Manager</a></li>			
+
+								<li><a href="#">My Annual Deficit</a></li>			
+
+								<li><a href="#.html">Investment Designer</a></li>	
+
+			    					<li><a href="#.html">Investment Manager</a></li>
+
+								<li><a href="#.html">My Risks Manager</a></li>
+
+								<li><a href="#.html">My Insurance Manager</a></li>
+
+								<li><a href="#.html">My SMS Alerter</a></li>
+
+								<li><a href="#.html">My Total Wealth Report</a></li>
+
+								<li><a href="#.html">My Knowledge Gain(Financial)</a>
+										<ul>
+										<li><a href="#.html">Articles Read</a></li>
+										<li><a href="#.html">Articles To Be Read Later</a></li>
+										<li><a href="#.html">Videos's Seen</a></li>
+										<li><a href="#.html">Video's To Be Seen</a></li>
+
+										<li><a href="#.html">Articles Written</a></li>
+										<li><a href="#.html">Questions Asked</a></li>
+										<li><a href="#.html">Questions Answered</a></li>
+										<li><a href="#.html">Certified in Courses</a></li>
+										<li><a href="#.html">Courses in Progress</a></li>
+										</ul>
+
+								</li>
+
+ 								<li><a href="#.html">My Score Card</a>
+										<ul>
+										<li><a href="#.html">Knowledge Score</a></li>
+										<li><a href="#.html">Document Management Score</a></li>
+										<li><a href="#.html">Tax Management Score</a></li>
+
+										<li><a href="#.html">Expense Mgmt Score</a></li>
+										<li><a href="#.html">Income Mgmt Score</a></li>
+										<li><a href="#.html">Inflation OverCome Score</a></li>
+										<li><a href="#.html">Site Usage Score</a></li>
+										<li><a href="#.html">Mock Games Score</a></li>
+										<li><a href="#.html">Investment Gain Score</a></li>
+
+										</ul>
+								</li>
+
+								<li><a href="#.html">Money From My Skills</a></li>
+
+								<li><a href="#.html">Edit My Profile(s)</a></li>
+
+ 									
+							
+							</ul>
+								
+						
+						</li>						
+						
+						<li><a href="#.html">Grow Money Here:-</a><br/><span>Investment Avenues</span>
+
+							<ul>
+								<li><a href="#.html">Low Risk Low Return</a>
+										<ul>
+										<li><a href="fd.html">Bank Fixed Deposits</a></li>
+										<li><a href="gsec.html">Government Securities</a></li>
+										<li><a href="#.html">Bonds</a></li>
+										<li><a href="#.html">Debentures</a></li>
+
+										<li><a href="ppf.html">Public Provident Fund</a></li>
+										<li><a href="#.html">Kisan Vikas Patra</a></li>
+										<li><a href="#.html">Insurances</a></li>
+										<li><a href="#.html">Treasury Bills</a></li>
+										<li><a href="#.html">Commercal Papers</a></li>
+										<li><a href="#.html">Certificates Of Deposits</a></li>
+
+										</ul>
+								</li>
+
+								<li><a href="#">Low Risk Good Return</a>
+										<ul>
+										<li><a href="#.html">Long Term Debt Funds</a></li>
+										<li><a href="#.html">Corporate Fixed Deposits</a></li>
+										<li><a href="#.html">Liquid Funds</a></li>
+
+										</ul>
+								</li>
+
+								<li><a href="#.html">Medium Risk Medium Return</a>
+										<ul>
+										<li><a href="#.html">Gold ETF</a></li>
+										<li><a href="#.html">Silver ETF</a></li>
+										<li><a href="#.html">Gold & Silver Physical</a></li>
+
+										<li><a href="#.html">Low Equity Hybrid Funds</a></li>
+										<li><a href="#.html">ELSS</a></li>
+										<li><a href="#.html">Real Estate</a></li>
+										</ul>
+								</li>
+
+								<li><a href="#">Medium Risk Better Return</a>
+
+										<ul>
+										
+										<li><a href="#.html">3 Yrs+ Equity Mutual Fund*</a></li>
+										<li><a href="#.html">5 Yrs+ Equity Mutual Fund*</a></li>
+										<li><a href="#.html">7 Yrs+ Equity Mutual Fund*</a></li>
+										</ul>
+								</li>			
+
+								<li><a href="#">Medium Risk Great Return</a></li>			
+
+								<li><a href="#.html">High Risk High Return</a>
+
+										<ul>
+										<li><a href="#.html">Calls</a></li>
+										<li><a href="#.html">Puts</a></li>
+										<li><a href="#.html">Futures</a></li>
+										<li><a href="#.html">Index Trade</a></li>
+										<li><a href="#.html">Commodity Trading</a></li>
+
+										<li><a href="#.html">Equity Mutual Funds</a></li>
+										<li><a href="#.html">Monthly to Quarterly Stocks</a></li>
+										<li><a href="#.html">Stock Investments</a></li>
+										<li><a href="#.html">IPO's & FPO's</a></li>
+										</ul>
+								</li>	
+
+			    					<li><a href="#.html">High Risk Huge Returns</a>
+
+										<ul>
+										<li><a href="#.html">IntraDay Stock Trading</a></li>
+										<li><a href="#.html">Weekly Stock Trading</a></li>
+										</ul>
+								</li>
+
+									
+							
+							</ul>
+								
+						
+						</li>	
+
+						<li><a href="#.html">Screeners</a><br /><span>Sort Stocks/Funds</span>
+
+										<ul>
+										<li><a href="#.html">Stock Screener</a></li>
+										<li><a href="#.html">Mutual Funds Screener</a></li>
+										<li><a href="#.html">How to Select good Stocks</a></li>
+										<li><a href="#.html">How to select good Funds</a></li>
+										</ul>
+								</li>
+
+						<li><a href="#.html">Must Reads</a><br /><span>And Courses</span>
+										<ul>
+										<li><a href="#.html">Must Read Articles</a></li>
+										<li><a href="#.html">Must See Videos</a></li>
+										<li><a href="#.html">Certified Courses Offered</a></li>
+										<li><a href="#.html">Quick Tutorials</a></li>
+
+										<li><a href="#.html">Rated Articles</a></li>
+										<li><a href="#.html">Test Your Knowledge</a></li>
+										</ul>
+								</li>
+						<li><a href="Calculator.htm">Tools</a><br /><span>& CalC's</span></li>
+
+						<li><a href="#.html">SaveTax</a><br /><span>& More</span></li>
+
+					
+					</ul>
+					
+				</div>
+			</div>
+			<!-- end main menu -->
+
+		</div>
+		<!-- end header content -->
+	
+	</div>	
+	<!-- end header background -->
+
+	
+
+</div>
+<!-- end header -->
+
+
+
+			<!--______________________________________________________________________________-->
+
+		
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- begin banner -->
+<div class="banner">
+		
+		<!-- begin slider content -->
+		<div class="slider_content">
+			
+			<!-- begin slider items -->
+
+			<div id="slideshow" class="sliders_full">
+				<div class="slider_item" style="background:url(images/banners/banner1.jpg) center no-repeat;"><a href="#.html"></a></div>
+				<div class="slider_item" style="background:url(images/banners/banner2.jpg) center no-repeat;"><a href="#.html"></a></div>
+				<div class="slider_item" style="background:url(images/banners/banner3.jpg) center no-repeat;"><a href="#.html"></a></div>
+
+				<div class="slider_item" style="background:url(images/banners/banner4.jpg) center no-repeat;"><a href="#.html"></a></div>
+				<div class="slider_item" style="background:url(images/banners/banner5.jpg) center no-repeat;"><a href="#.html"></a></div>
+			</div>
+			<!-- end slider items -->
+
+			
+			<!--
+			
+			<ul id="slideshow" class="sliders">
+			
+				<li><img src="images/banner.png" width="1400" height="400" /></li>
+				<li><img src="images/banner1.png" width="1000" height="400" /></li>
+				<li><img src="images/banner.png" width="1000" height="400" /></li>
+				<li><img src="images/banner1.png" width="1000" height="400" /></li>
+				<li><img src="images/banner.png" width="1000" height="400" /></li>
+
+			</ul>
+	
+			-->
+			
+			
+		</div>
+		<!-- end slider content -->
+		
+		<!-- begin slider buttons -->
+		<div class="slider_nav">
+
+		
+			<div id="nav">
+					<ul id="recentimages">
+						<li class="recentimages"></li>
+
+						<li class="recentimages"></li>
+						<li class="recentimages"></li>
+						<li class="recentimages"></li>
+						<li class="recentimages"></li>
+					</ul>
+		  </div>
+
+		  
+		</div>
+		<!-- end slider buttons -->
+
+</div>
+<!-- end banner -->
+
+<!-- begin news ticker -->
+<div class="news">
+
+		<div class="news_top_line"></div>
+		
+		<!-- begin news content -->
+		<div class="news_content">
+			
+			<div class="left_shadow"></div>
+
+			
+			<!-- begin news items -->
+
+			<div class="news_text">
+				<div class="hot_news">BoostYourEarning:</div>
+				<div class="news_line"></div>
+				
+				<!-- begin items -->
+				<div class="news_items">
+			
+					<ul id="news_ticker">
+						<li>BoostYourEarning.com, welcomes you. Warm Welcome to our site!</li>
+
+						<li>We wish all our customers a very Happy New Fiscal Year.A Prosperous 2012-13 !</li>
+
+						<li>Check out SBI Bond Fund, a product of class in itself.</li>
+						<li>Track, Manage, Invest & Grow - BoostYourEarning</li>
+						<li>Be with Us & You will Surely Save & Grow Your Wealth. </li>
+
+					</ul>
+				
+				</div>
+
+				<!-- end items -->
+				
+				<div class="news_more"><a href="#.html"><img src="images/more.gif" alt="news more" width="78" height="24" border="0"/></a></div>
+				
+			</div>
+			<!-- end news item -->
+			
+			<div class="right_shadow"></div>
+		</div>
+
+		<!-- end news content -->
+		
+</div>
+
+<!-- end news ticker -->
+
+<!-- begin container -->
+<div class="container">
+
+	<!-- begin site content -->
+	<div class="site_content">
+	
+		<!-- begin left shadow -->
+		<div class="container_left_shadow">
+
+		
+			<!-- begin right shadow -->
+			<div class="container_right_shadow">
+
+				
+				<!-- begin container text -->
+
+				<div class="container_text">
+					
+					<!-- begin intro holder -->
+					<div class="intro_holder">
+						<div class="intro_text">Our Target is Your 33% Financial Growth Per Annum..  </div>
+
+						<a href="#.html"><span class="intro_ready"></span></a>
+					</div>
+					<!-- end intro holder -->
+
+					
+					<div class="page_line"></div>
+
+					
+					<!--  begin content text -->
+					<div class="some_text">
+Incepted in 2012, BoostYourEarning has never looked back since! Infact, with Exclusive Distributorship of 7 Well Known International Brands, Boost Your Earning has marched as the Fastest Growing Company in the Industry. Boost Your Earning is the First to get innovations like BECOPAD AND BECODISC to the Indian Subcontinent. Serving companies like Coca-Cola for straight 12 years, Boost Your Earning client base has incremented in all folds,.. today, making it the Market Leader in the Filtration Industry.
+.
+		
+					</div>
+					 <!-- end content text -->
+
+					 
+
+
+	
+
+					<!-- begin some widgets -->
+					<div class="some_widgets">
+					  	
+						<!-- begin some widget 1 -->	
+						<div class="some_widgets_item">
+
+							
+							<!-- begin image -->
+
+							<div class="some_widget_image">
+								<img src="images/icons/some_icon2.png"  alt=""/>
+							</div>
+
+							<!-- end image -->
+							
+							<!-- begin text -->
+							<div class="some_widget_text">
+									<div class="some_title">Why Choose Us?</div>
+
+									Trust Of Happiness.
+							</div>
+
+							<!-- end text -->
+						  
+						</div>
+
+						<!-- end some widget 1 -->
+						
+						<!-- begin some widget 2 -->	
+						<div class="some_widgets_item">
+							
+							<!-- begin image -->
+							<div class="some_widget_image">
+
+								<img src="images/icons/some_icon1.png"  alt=""/>
+							</div>
+
+							<!-- end image -->
+
+							
+							<!-- begin text -->
+							<div class="some_widget_text">
+									<div class="some_title">INDUSTRIES TO INVEST</div>
+									Companies & Applications.
+							</div>
+
+							<!-- end text -->
+						  
+						</div> 
+						<!-- end some widget 2 -->	
+						
+	
+	
+						<!-- begin some widget 3 -->	
+						<div class="some_widgets_item_last">
+
+							
+							<!-- begin image -->
+							<div class="some_widget_image">
+								<img src="images/icons/logo-icon.png"  alt=""/>
+							</div>
+							<!-- end image -->
+
+							<!-- begin text -->
+							<div class="some_widget_text">
+									<div class="some_title">ABOUT US</div>
+
+									Our slogan tells you all.
+							</div>
+							<!-- end text -->
+						  
+						  </div> 
+						<!-- end some widget 3 -->	
+					
+					</div>
+
+					<!-- begin end widgets -->
+					
+					<div class="cleardiv"></div>
+					<div class="page_line"></div>
+
+					
+					<!-- begin bottom widgets -->
+
+					<div class="widgets">
+						
+						<!-- begin bottom widget 1 -->
+						<div class="some_widgets_item_bottom">
+							
+							<div class="some_title">Finest Quality :</div>
+
+							<div class="some_content">Our Quality Assurance is defined by the likes of US FDA & German FDA. Moreover, we always keep material Ex Stock.</div><br />
+
+	<div class="some_title">Cost Efficiency :</div>
+
+							<div class="some_content">More then our prices, our products prove their Cost-Efficiency. We look at Cost-Efficiency in the wider aspect. </div><br />
+
+	<div class="some_title">Service & Delivery :</div>
+
+							<div class="some_content">We Believe:"Being on par in terms of Quality & Cost only gets you into the Game.
+Service Wins The Game.." </div><br />
+
+
+							<div class="some_content_image">
+								<img src="images/icons/some_icon4.png" alt=""/>
+
+							</div>	
+							
+						</div>
+						<!-- end bottom widget 1 -->
+
+						<!-- begin bottom widget 2 -->
+						<div class="some_widgets_item_bottom">
+
+							
+<div class="sc_menu_wrapper">
+  <div class="sc_menu">
+    <a title="Pharmaceuticals" href="#"><img src="img/1.jpg" alt="Pharmaceuticals"/></a>
+    <a title="Bio-Technology" href="#"><img src="img/2.jpg" alt="Beverages"/></a>
+
+    <a title="The Coca-Cola Company" href="#"><img src="img/3.jpg" alt="Food Processing"/></a>        
+    <a title="Wine Industry - From Grapes To Bottles!" href="#"><img src="img/4.jpg" alt="Dairy Industry"/></a>
+    <a title="Oil Refinery" href="#"><img src="img/5.jpg" alt="Oil Refinery"/></a>
+
+    <a title="Pepsico Beverages" href="#"><img src="img/6.jpg" alt="Energy Production"/></a>
+
+    <a title="Dyes/Chemicals" href="#"><img src="img/9.jpg" alt="Dyes/Chemicals"/></a>
+    <a title="Automobile" href="#"><img src="img/10.jpg" alt="Automobile"/></a>  
+  </div>
+</div>
+
+							<div class="some_content_image">
+								<img src="images/icons/some_icon5.png" alt=""/>
+
+							</div>	
+							
+						</div>
+
+						<!-- end bottom widget 2 -->
+
+		
+						<!-- begin bottom widget 3 -->
+						<div class="some_widgets_item_bottom_last">
+							
+							<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=8,0,0,0" width="230" height="300">
+  <param name="movie" value="main-big300h.swf" />
+  <param name="quality" value="high" />
+  <param name="allowScriptAccess" value="always" />
+
+  <param name="wmode" value="transparent">
+
+     <embed src="main-big300h.swf"
+      quality="high"
+      type="application/x-shockwave-flash"
+      WMODE="transparent"
+      width="230"
+      height="300"
+      pluginspage="http://www.macromedia.com/go/getflashplayer"
+      allowScriptAccess="always" />
+
+</object>
+
+							<div class="some_content_image">
+								<img src="images/icons/some_icon6.png" alt=""/>
+							</div>	
+							
+						</div>
+						<!-- end bottom widget 3 -->
+				
+					
+
+
+
+
+
+
+
+
+
+
+
+
+					
+					</div>
+
+					<!-- end bottom widgets -->
+
+				</div>
+				<!-- end container text -->
+				
+			</div>
+			<!-- end right shadow -->
+		
+		</div>
+		<!-- end left shadow -->
+		
+	</div>
+
+	<!-- end site content -->
+
+	
+</div>
+<!-- end container -->
+
+<!--______________________________________________________________________________-->
+
+
+
+<!-- begin footer -->
+<div class="footer">
+
+	
+		
+		<!-- begin footer pages -->
+		<div class="footer_widget_pages">
+		<br />
+
+			<ul>
+<a href="http://www.freedomain.co.nr" target="_blank"><img style="width: 88px; height: 31px;" src="http://zrumcra.so.com.ru/but1.gif" alt="Free Domains @ co.nr" border="0" height="31" width="88"></a>
+
+				<li><a href="index.aspx">Home</a></li>
+
+				<li><a href="#.html">Products</a></li>
+				<li><a href="#.html">About</a></li>
+
+				<li><a href="#.html">Services</a></li>
+				<li><a href="#.html">Gallery</a></li>
+
+				<li><a href="#.html">Contact</a></li>
+			</ul>
+
+		</div>
+<br />
+
+		<!-- end footer pages -->
+		<div class="cleardiv"></div>
+
+	
+		
+		
+
+			
+
+<!-- end footer -->
+
+<script type="text/javascript">Cufon.now();</script>
+</body>
+
+<!-- Code Developed By Mrudang Mathuria -->
+</html>

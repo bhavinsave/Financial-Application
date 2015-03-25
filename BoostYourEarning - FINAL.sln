@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "BoostYourEarning - FINAL", ".", "{B826A40A-8443-4E5B-BDC5-D4200D1DBCB1}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFramework = "3.5"
+		Debug.AspNetCompiler.VirtualPath = "/BoostYourEarning - FINAL"
+		Debug.AspNetCompiler.PhysicalPath = "F:\Nikul\BoostYourEarning - FINAL\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\BoostYourEarning - FINAL\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/BoostYourEarning - FINAL"
+		Release.AspNetCompiler.PhysicalPath = "F:\Nikul\BoostYourEarning - FINAL\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\BoostYourEarning - FINAL\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "1060"
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|.NET = Debug|.NET
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B826A40A-8443-4E5B-BDC5-D4200D1DBCB1}.Debug|.NET.ActiveCfg = Debug|.NET
+		{B826A40A-8443-4E5B-BDC5-D4200D1DBCB1}.Debug|.NET.Build.0 = Debug|.NET
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

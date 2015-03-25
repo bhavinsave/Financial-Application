@@ -1,0 +1,66 @@
+/*This style will be applied to the div element holding the menu*/
+body {
+  margin: 5px;
+  padding: 0;
+  behavior:url("csshover.htc");
+}
+
+#menuContainer {
+  background-color: white;
+  width: 10em;
+  padding: 5px;
+}
+
+/* Link styles*/
+#menuContainer a {
+  text-decoration: none;
+  color: #FFCC66;
+  font-weight: bold;
+  font-size: 10pt;
+  font-family: Verdana, Arial, sans-serif;
+}
+
+#menuContainer a:hover {
+  color: #993300;
+}
+
+/* Hide bullets in unordered list*/
+#menuContainer ul { 
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* Set li styles*/
+#menuContainer li {
+  background-color: #CC6600;
+  border: 1px solid #FF9933;
+  width: 10em;
+  /* this is to make the submenus position relative to this li */
+  position: relative; 
+}
+
+/* Mouseover li style*/
+#menuContainer li:hover {
+  border: 1px solid #CC6600;   
+  background-color: #FF9933;
+}
+
+/*Initially hide second and higher level pop-ups */
+#menuContainer ul ul {
+  position: absolute;
+  left: 10em;
+  top: 0;
+  visibility: hidden;
+}
+
+/*Third level menus should dissapear when first level has hover*/
+#menuContainer li:hover ul ul {
+	visibility: hidden;
+}
+
+
+/*Mouseover: display second level or third level pop-up*/
+#menuContainer li:hover ul, #menuContainer li:hover li:hover ul {
+  visibility: visible;
+}

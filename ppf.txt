@@ -1,0 +1,854 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- Code Developed by Mrudang Mathuria -->
+
+<head>
+
+<title>BoostYourEarning.Com</title>
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+<meta name="description" content="Boost Your Earning website" />
+<meta name="keywords" content="Boost Your Earning products names/>
+<meta name="copyright" content="Boost Your Earning "/>
+<meta name="robots" content="all" />
+
+<script type="text/javascript">
+	var banner_delay = 6000;
+</script> 
+
+
+<link rel="icon" 
+      type="image/png" 
+      href="favicon.png">
+
+
+<!-- including css styles -->
+
+
+
+<style type="text/css">
+body {
+	background: #0F0D0D;
+	padding: 30px 0 0 50px;
+}
+div.sc_menu_wrapper {
+	position: relative; 	
+	height: 290px;
+	/* Make bigger than a photo, because we need a place for a scrollbar. */
+	width: 264px;
+	
+	margin-top: 1px;
+	overflow: auto;
+}
+div.sc_menu {
+	padding: 15px 0;
+}
+.sc_menu a {
+	display: block;
+	margin-bottom: 5px;
+	width: 272px;
+	
+	border: 2px rgb(79, 79, 79) solid;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 1px;		
+	
+	/* When image support is turned off */
+	color: #fff;
+	background: rgb(79, 79, 79);	
+}
+.sc_menu a:hover {
+	border-color: rgb(130, 130, 130);
+
+}
+.sc_menu img {
+	display: block;
+	border: none;
+}
+
+.sc_menu_wrapper .loading {
+	position: absolute;
+	top: 50px;
+	left: 10px;
+	
+	margin: 0 auto;
+	padding: 10px;
+
+	width: 100px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;	
+	
+	text-align: center;
+	color: #fff;
+	border: 1px solid rgb(79, 79, 79);
+	background: #1F1D1D;
+}
+/* Styling tooltip */
+.sc_menu_tooltip {
+	display: block;
+	position: absolute;
+	
+	padding: 6px;
+	font-size: 12px;	
+	color: #fff;
+	
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;	
+	
+	border: 1px solid rgb(79, 79, 79);
+	background: rgb(0, 0, 0);
+	/* Make background a bit transparent for browsers that support rgba */	
+	background: rgba(0, 0, 0, 0.5);
+}
+
+/* Here are styles for a link to an article. Not for you :) */
+#back {
+	margin-left: 8px;
+	color: gray;
+	font-size: 18px;
+	text-decoration: none;
+}
+#back:hover {
+	text-decoration: underline;
+}
+</style>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.1/jquery.min.js" type="text/javascript"></script>
+<script type= "text/javascript">/*<![CDATA[*/
+
+function makeScrollable(wrapper, scrollable){
+	// Get jQuery elements
+	var wrapper = $(wrapper), scrollable = $(scrollable);
+	
+	// Hide images until they are not loaded
+	scrollable.hide();
+	var loading = $('<div class="loading">Loading...</div>').appendTo(wrapper);
+	
+	// Set function that will check if all images are loaded
+	var interval = setInterval(function(){
+		var images = scrollable.find('img');
+		var completed = 0;
+		
+		// Counts number of images that are succesfully loaded
+		images.each(function(){
+			if (this.complete) completed++;	
+		});
+		
+		if (completed == images.length){
+			clearInterval(interval);
+			// Timeout added to fix problem with Chrome
+			setTimeout(function(){
+				
+				loading.hide();
+				// Remove scrollbars	
+				wrapper.css({overflow: 'hidden'});						
+				
+				scrollable.slideDown('slow', function(){
+					enable();	
+				});					
+			}, 1000);	
+		}
+	}, 100);
+	
+	function enable(){
+		// height of area at the top at bottom, that don't respond to mousemove
+		var inactiveMargin = 99;					
+		// Cache for performance
+		var wrapperWidth = wrapper.width();
+		var wrapperHeight = wrapper.height();
+		// Using outer height to include padding too
+		var scrollableHeight = scrollable.outerHeight() + 2*inactiveMargin;
+		// Do not cache wrapperOffset, because it can change when user resizes window
+		// We could use onresize event, but it's just not worth doing that 
+		// var wrapperOffset = wrapper.offset();
+		
+		// Create a invisible tooltip
+		var tooltip = $('<div class="sc_menu_tooltip"></div>')
+			.css('opacity', 0)
+			.appendTo(wrapper);
+	
+		// Save menu titles
+		scrollable.find('a').each(function(){				
+			$(this).data('tooltipText', this.title);				
+		});
+		
+		// Remove default tooltip
+		scrollable.find('a').removeAttr('title');		
+		// Remove default tooltip in IE
+		scrollable.find('img').removeAttr('alt');	
+		
+		var lastTarget;
+		//When user move mouse over menu			
+		wrapper.mousemove(function(e){
+			// Save target
+			lastTarget = e.target;
+
+			var wrapperOffset = wrapper.offset();
+		
+			var tooltipLeft = e.pageX - wrapperOffset.left;
+			// Do not let tooltip to move out of menu.
+			// Because overflow is set to hidden, we will not be able too see it 
+			tooltipLeft = Math.min(tooltipLeft, wrapperWidth - 75); //tooltip.outerWidth());
+			
+			var tooltipTop = e.pageY - wrapperOffset.top + wrapper.scrollTop() - 40;
+			// Move tooltip under the mouse when we are in the higher part of the menu
+			if (e.pageY - wrapperOffset.top < wrapperHeight/2){
+				tooltipTop += 80;
+			}				
+			tooltip.css({top: tooltipTop, left: tooltipLeft});				
+			
+			// Scroll menu
+			var top = (e.pageY -  wrapperOffset.top) * (scrollableHeight - wrapperHeight) / wrapperHeight - inactiveMargin;
+			if (top < 0){
+				top = 0;
+			}			
+			wrapper.scrollTop(top);
+		});
+		
+		// Setting interval helps solving perfomance problems in IE
+		var interval = setInterval(function(){
+			if (!lastTarget) return;	
+										
+			var currentText = tooltip.text();
+			
+			if (lastTarget.nodeName == 'IMG'){					
+				// We've attached data to a link, not image
+				var newText = $(lastTarget).parent().data('tooltipText');
+
+				// Show tooltip with the new text
+				if (currentText != newText) {
+					tooltip
+						.stop(true)
+						.css('opacity', 0)	
+						.text(newText)
+						.animate({opacity: 1}, 1000);
+				}					
+			}
+		}, 200);
+		
+		// Hide tooltip when leaving menu
+		wrapper.mouseleave(function(){
+			lastTarget = false;
+			tooltip.stop(true).css('opacity', 0).text('');
+		});			
+		
+		/*
+		//Usage of hover event resulted in performance problems
+		scrollable.find('a').hover(function(){
+			tooltip
+				.stop()
+				.css('opacity', 0)
+				.text($(this).data('tooltipText'))
+				.animate({opacity: 1}, 1000);
+	
+		}, function(){
+			tooltip
+				.stop()
+				.animate({opacity: 0}, 300);
+		});
+		*/			
+	}
+}
+	
+$(function(){	
+	makeScrollable("div.sc_menu_wrapper", "div.sc_menu");
+});
+/*]]>*/</script>
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" type="text/css" href="style.css" />
+<!--[if (gte IE 7)|(!IE)]><!-->
+<link rel="stylesheet" type="text/css" href="menu.css" />
+<!--<![endif]-->
+
+<!--[if lt IE 7]>
+<link rel="stylesheet" type="text/css" href="menuie6.css" />
+<![endif]-->
+
+
+<!-- including javascripts (jquery, swfObject, prettyPhoto) -->
+
+<script type="text/javascript" src="js/jquery-1.4.min.js"></script>
+
+<script type="text/javascript" src="js/superfish.js"></script>
+<script type="text/javascript" src="js/jquery.cycle.min.js"></script>
+<script type="text/javascript" src="js/cufon.js"></script>
+<script type="text/javascript" src="js/Century_Gothic_400.font.js"></script>
+<script type="text/javascript" src="js/custom.js"></script> 
+<script type="text/javascript" src="js/jquery.prettyPhoto.js"></script>
+
+
+
+<!--[if IE 6]>
+	<script src="js/DD_belatedPNG_0.0.8a-min.js"></script>
+	<script>
+		DD_belatedPNG.fix('img, .menu_container, .main_menu li .hover, .main_menu li ul, #recentimages li, #recentimages li .hover, .left_shadow, .right_shadow, .container_left_shadow, .container_right_shadow, .submit_bg, .container_page_left_shadow, .container_page_right_shadow, .container_portfolio_left_shadow, .container_portfolio_right_shadow, .portfolio_zoom');
+	</script>
+<![endif]-->
+
+</head>
+
+
+
+
+<body width="100%">
+
+<!-- begin header -->
+<div id="header" >
+
+	<!-- begin header background -->
+	<div class="header_bg">
+	
+		<!-- begin header content -->
+		<div class="header_container">
+		<div class="header_content_topading"></div>
+			
+			
+			
+			
+		
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			<!-- begin main menu -->
+			<!-- begin main menu -->
+			
+			<!--______________________________________________________________________________-->
+
+
+			<!-- begin------------------- main------------------- menu -->
+			<div class="menu_container">
+
+				<div class="menu_items">
+
+					
+					<ul class="main_menu">
+
+
+						<li><a href="index.aspx">Home</a><br /><span>Welcome</span></li>
+						<li><a href="#.html">Our Specialities</a><br /><span>what we offer</span>
+							<ul>
+								<li><a href="#.html">My Expense Manager</a></li>
+
+								<li><a href="#.html">My Income Manager</a></li>
+
+								<li><a href="#.html">My Assets Manager</a></li>
+
+								<li><a href="#">My Tax Manager</a></li>			
+
+								<li><a href="#">My Annual Deficit</a></li>			
+
+								<li><a href="#.html">Investment Designer</a></li>	
+
+			    					<li><a href="#.html">Investment Manager</a></li>
+
+								<li><a href="#.html">My Risks Manager</a></li>
+
+								<li><a href="#.html">My Insurance Manager</a></li>
+
+								<li><a href="#.html">My SMS Alerter</a></li>
+
+								<li><a href="#.html">My Total Wealth Report</a></li>
+
+								<li><a href="#.html">My Knowledge Gain(Financial)</a>
+										<ul>
+										<li><a href="#.html">Articles Read</a></li>
+										<li><a href="#.html">Articles To Be Read Later</a></li>
+										<li><a href="#.html">Videos's Seen</a></li>
+										<li><a href="#.html">Video's To Be Seen</a></li>
+
+										<li><a href="#.html">Articles Written</a></li>
+										<li><a href="#.html">Questions Asked</a></li>
+										<li><a href="#.html">Questions Answered</a></li>
+										<li><a href="#.html">Certified in Courses</a></li>
+										<li><a href="#.html">Courses in Progress</a></li>
+										</ul>
+
+								</li>
+
+ 								<li><a href="#.html">My Score Card</a>
+										<ul>
+										<li><a href="#.html">Knowledge Score</a></li>
+										<li><a href="#.html">Document Management Score</a></li>
+										<li><a href="#.html">Tax Management Score</a></li>
+
+										<li><a href="#.html">Expense Mgmt Score</a></li>
+										<li><a href="#.html">Income Mgmt Score</a></li>
+										<li><a href="#.html">Inflation OverCome Score</a></li>
+										<li><a href="#.html">Site Usage Score</a></li>
+										<li><a href="#.html">Mock Games Score</a></li>
+										<li><a href="#.html">Investment Gain Score</a></li>
+
+										</ul>
+								</li>
+
+								<li><a href="#.html">Money From My Skills</a></li>
+
+								<li><a href="#.html">Edit My Profile(s)</a></li>
+
+ 									
+							
+							</ul>
+								
+						
+						</li>						
+						
+						<li><a href="#.html">Grow Money Here:-</a><br/><span>Investment Avenues</span>
+
+							<ul>
+								<li><a href="#.html">Low Risk Low Return</a>
+										<ul>
+										<li><a href="fd.html">Bank Fixed Deposits</a></li>
+										<li><a href="gsec.html">Government Securities</a></li>
+										<li><a href="#.html">Bonds</a></li>
+										<li><a href="#.html">Debentures</a></li>
+
+										<li><a href="ppf.html">Public Provident Fund</a></li>
+										<li><a href="#.html">Kisan Vikas Patra</a></li>
+										<li><a href="#.html">Insurances</a></li>
+										<li><a href="#.html">Treasury Bills</a></li>
+										<li><a href="#.html">Commercal Papers</a></li>
+										<li><a href="#.html">Certificates Of Deposits</a></li>
+
+										</ul>
+								</li>
+
+								<li><a href="#">Low Risk Good Return</a>
+										<ul>
+										<li><a href="#.html">Long Term Debt Funds</a></li>
+										<li><a href="#.html">Corporate Fixed Deposits</a></li>
+										<li><a href="#.html">Liquid Funds</a></li>
+
+										</ul>
+								</li>
+
+								<li><a href="#.html">Medium Risk Medium Return</a>
+										<ul>
+										<li><a href="#.html">Gold ETF</a></li>
+										<li><a href="#.html">Silver ETF</a></li>
+										<li><a href="#.html">Gold & Silver Physical</a></li>
+
+										<li><a href="#.html">Low Equity Hybrid Funds</a></li>
+										<li><a href="#.html">ELSS</a></li>
+										<li><a href="#.html">Real Estate</a></li>
+										</ul>
+								</li>
+
+								<li><a href="#">Medium Risk Better Return</a>
+
+										<ul>
+										
+										<li><a href="#.html">3 Yrs+ Equity Mutual Fund*</a></li>
+										<li><a href="#.html">5 Yrs+ Equity Mutual Fund*</a></li>
+										<li><a href="#.html">7 Yrs+ Equity Mutual Fund*</a></li>
+										</ul>
+								</li>			
+
+								<li><a href="#">Medium Risk Great Return</a></li>			
+
+								<li><a href="#.html">High Risk High Return</a>
+
+										<ul>
+										<li><a href="#.html">Calls</a></li>
+										<li><a href="#.html">Puts</a></li>
+										<li><a href="#.html">Futures</a></li>
+										<li><a href="#.html">Index Trade</a></li>
+										<li><a href="#.html">Commodity Trading</a></li>
+
+										<li><a href="#.html">Equity Mutual Funds</a></li>
+										<li><a href="#.html">Monthly to Quarterly Stocks</a></li>
+										<li><a href="#.html">Stock Investments</a></li>
+										<li><a href="#.html">IPO's & FPO's</a></li>
+										</ul>
+								</li>	
+
+			    					<li><a href="#.html">High Risk Huge Returns</a>
+
+										<ul>
+										<li><a href="#.html">IntraDay Stock Trading</a></li>
+										<li><a href="#.html">Weekly Stock Trading</a></li>
+										</ul>
+								</li>
+
+									
+							
+							</ul>
+								
+						
+						</li>	
+
+						<li><a href="#.html">Screeners</a><br /><span>Sort Stocks/Funds</span>
+
+										<ul>
+										<li><a href="#.html">Stock Screener</a></li>
+										<li><a href="#.html">Mutual Funds Screener</a></li>
+										<li><a href="#.html">How to Select good Stocks</a></li>
+										<li><a href="#.html">How to select good Funds</a></li>
+										</ul>
+								</li>
+
+						<li><a href="#.html">Must Reads</a><br /><span>And Courses</span>
+										<ul>
+										<li><a href="#.html">Must Read Articles</a></li>
+										<li><a href="#.html">Must See Videos</a></li>
+										<li><a href="#.html">Certified Courses Offered</a></li>
+										<li><a href="#.html">Quick Tutorials</a></li>
+
+										<li><a href="#.html">Rated Articles</a></li>
+										<li><a href="#.html">Test Your Knowledge</a></li>
+										</ul>
+								</li>
+						<li><a href="Calculator.htm">Tools</a><br /><span>& CalC's</span></li>
+
+						<li><a href="#.html">SaveTax</a><br /><span>& More</span></li>
+
+					
+					</ul>
+					
+				</div>
+			</div>
+			<!-- end main menu -->
+
+		</div>
+		<!-- end header content -->
+	
+	</div>	
+	<!-- end header background -->
+
+	
+
+</div>
+<!-- end header -->
+
+
+
+			<!--______________________________________________________________________________-->
+
+		
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+			
+
+
+<div class="page_top"></div>
+
+
+<!-- begin container -->
+<div class="container">
+
+	<!-- begin site content -->
+
+	<div class="site_content">
+	
+		<!-- begin left shadow -->
+		<div class="container_page_left_shadow">
+		
+			<!-- begin right shadow -->
+			<div class="container_page_right_shadow">
+				
+				<!-- begin container text -->
+
+				<div class="container_text">
+					
+					<!-- begin page short cut -->
+
+					<div class="page_shortcut">
+						 Home &raquo; About &raquo; <strong>PPF</strong>
+					</div>
+					<!-- end page short cut -->
+
+					
+					<!-- begin page title container -->
+					<div class="page_title_container">
+
+						
+						<!-- begin page title -->
+						<div class="page_title">
+							<div class="custom_title">PPF Investments</div>
+						</div>
+						<!-- end page title -->
+						
+						<!-- begin search -->
+
+						<div class="page_search">
+							<div class="page_search_bg"><input name="" type="text" /></div>
+
+							<a href="index-2.html"><span class="page_search_button"></span></a>
+							<div class="cleardiv"></div>
+							<div class="page_search_intro"><strong>E.g.</strong> company, releases, search or subject.</div>
+							<div class="cleardiv"></div>
+						</div>
+
+						<!-- end begin search -->
+
+					</div>
+					<!-- end page title container -->
+
+					<div class="page_line"></div>
+					
+					
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<span class="ht15 clear"/>
+<div class="arti_content"><p><font size="6">I</font>t is that time of the year when most of us would have already made our decision as to where we will make our investments or would at least have had the chance of looking at different investment instruments.</p><div id="ad_in_arti">
+	<script type="text/javascript">
+	if(document.getElementById("ad_in_arti")){if(showAds('ad_in_arti')){OAS_AD('x15');}}
+	</script><a target="_top" href="http://ads.rediff.com/RealMedia/ads/click_nx.ads/inbusinessA.rediff.com/business-article.htm/1889193645@LB02,BOX03,BOX04,TopRight,x15,Position1,TopLeft,x21,Position2%21x15?g=2&amp;a=24&amp;c=75&amp;s=30&amp;cn=099&amp;z=000000&amp;p=034&amp;e=06&amp;d=_9_&amp;i=_35_&amp;dor=20060723&amp;mi=100&amp;thp=1&amp;REFERER=http://www.google.co.in/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=4&amp;ved=0CGQQFjAD&amp;url=http%3A%2F%2Fwww.rediff.com%2Fmoney%2F2009%2Fmar%2F25perfin-the-basics-of-ppf.htm&amp;ei=cldmT-OEJ8a3rAf49vS8Bw&amp;usg=AFQjCNG1tnvEShlLBTV3iLMbmjwL7qX4UQ&amp;sig2=RfQvmoLbet6EPu_FePLAtQ&amp;RLOC=__eZMqPfDceMg__4P6Xdf5DkD2__tHonjGX8AnI__ind__&amp;PURL=http%3A%2F%2Fwww.rediff.com%2Fmoney%2F2009%2Fmar%2F25perfin-the-basics-of-ppf.htm&amp;OAS_cat=NS"><img border="0" alt="Click!" src="http://ads.rediff.com/RealMedia/ads/adstream_nx.ads/inbusinessA.rediff.com/business-article.htm/1889193645@LB02,BOX03,BOX04,TopRight,x15,Position1,TopLeft,x21,Position2%21x15?g=2&amp;a=24&amp;c=75&amp;s=30&amp;cn=099&amp;z=000000&amp;p=034&amp;e=06&amp;d=_9_&amp;i=_35_&amp;dor=20060723&amp;mi=100&amp;thp=1&amp;REFERER=http://www.google.co.in/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=4&amp;ved=0CGQQFjAD&amp;url=http%3A%2F%2Fwww.rediff.com%2Fmoney%2F2009%2Fmar%2F25perfin-the-basics-of-ppf.htm&amp;ei=cldmT-OEJ8a3rAf49vS8Bw&amp;usg=AFQjCNG1tnvEShlLBTV3iLMbmjwL7qX4UQ&amp;sig2=RfQvmoLbet6EPu_FePLAtQ&amp;RLOC=__eZMqPfDceMg__4P6Xdf5DkD2__tHonjGX8AnI__ind__&amp;PURL=http%3A%2F%2Fwww.rediff.com%2Fmoney%2F2009%2Fmar%2F25perfin-the-basics-of-ppf.htm&amp;OAS_cat=NS" class=" notrjqbdtbdmacjgludd"/></a>
+</div>
+<p>At one point in time or the other we would have come across 'Public Provident Fund' as an effective investing instrument. But how much do we know about Public Provident Fund, or PPF?</p>
+
+<p><b>What is the Public Provident Fund?</b></p>
+<p>PPF is a long-term, government-backed small savings scheme of the Central government started with the objective of providing old age income security to the workers in the unorganised sector and self-employed individuals.</p>
+<p><b>What is the interest rate offered through PPF?</b></p>
+
+<br /><table cellspacing="0" cellpadding="0" border="1" table="" style="border-right: medium none; border-width: medium; border-style: none; border-color: -moz-use-text-color; background: none repeat scroll 0% 0% rgb(0, 51, 102); margin-left: 19.1pt; border-collapse: collapse;">
+
+<tbody><tr>
+<td width="293" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: 1pt; border-style: solid; border-color: black; width: 219.4pt;">
+<p align="center"><b><font size="2" face="Arial" color="#ffffff">National Savings Certificate (NSC)</font></b></p></td>
+<td width="313" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: 1pt 1pt 1pt medium; border-style: solid solid solid none; border-color: black black black -moz-use-text-color; width: 234.9pt;">
+
+<p align="center"><b><font size="2" face="Arial" color="#ffffff">Public Provident Fund (PPF)</font></b></p></td></tr>
+
+<tr>
+<td width="293" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color black black; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 219.4pt;">
+<p><font size="2" face="Arial">Interest Paid: 8%, compounded half-yearly</font></p></td>
+<td width="313" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 234.9pt;">
+<p><font size="2" face="Arial">Interest Paid: 8%, compounded annually</font></p></td></tr>
+<tr>
+<td width="293" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color black black; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 219.4pt;">
+<p><font size="2" face="Arial">No monthly/yearly payments</font></p></td>
+<td width="313" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 234.9pt;">
+<p><font size="2" face="Arial">No monthly/yearly payments</font></p></td></tr>
+<tr>
+
+<td width="293" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color black black; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 219.4pt;">
+
+<p><font size="2" face="Arial">Minimum investment: Rs 100</font></p>
+<p><font size="2" face="Arial">Maximum investment: No Limit</font></p></td>
+<td width="313" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 234.9pt;">
+<p><font size="2" face="Arial">Minimum investment: Rs 500 (required annually)</font></p>
+<p><font size="2" face="Arial">Maximum investment: Rs 70,000</font></p></td></tr>
+<tr>
+<td width="293" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color black black; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 219.4pt;">
+<p><font size="2" face="Arial">Duration of investment: 6 years</font></p></td>
+<td width="313" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 234.9pt;">
+<p><font size="2" face="Arial">Duration of investment: 15 years</font></p></td></tr>
+
+<tr>
+<td width="293" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color black black; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 219.4pt;">
+<p><font size="2" face="Arial">Can be used as a security for mortgage and other purposes</font></p></td>
+<td width="313" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 234.9pt;">
+<p><font size="2" face="Arial">Cannot be used for such purposes</font></p></td></tr>
+<tr>
+<td width="293" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color black black; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 219.4pt;">
+<p><font size="2" face="Arial">Tax benefit under Section 80 'C' available.</font></p>
+<p><font size="2" face="Arial">Maximum limit: Rs 100,000</font></p></td>
+<td width="313" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 234.9pt;">
+<p><font size="2" face="Arial">Tax benefit under Section 80 'C' available.</font></p>
+<p><font size="2" face="Arial">Maximum limit: Rs 70,000 (limit of the investment in PPF)</font></p></td></tr>
+
+<tr>
+<td width="293" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt; border-style: none solid solid; border-color: -moz-use-text-color black black; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 219.4pt;">
+<p><font size="2" face="Arial">Good medium-term investment option</font></p></td>
+<td width="313" valign="top" style="border-right: 1pt solid black; padding: 0in 5.4pt; border-width: medium 1pt 1pt medium; border-style: none solid solid none; border-color: -moz-use-text-color black black -moz-use-text-color; background: none repeat scroll 0% 0% rgb(217, 236, 255); width: 234.9pt;">
+<p><font size="2" face="Arial">Good long-term investment option</font></p></td></tr></tbody></table><br />
+
+
+
+<p>Currently, the interest rate offered through PPF is around 8 per cent, which is compounded annually. Interest is calculated on the lowest balance between the fifth day and last day of the calendar month and is credited to the account on March 31 every year. So to derive the maximum, the deposits should be made between 1st and 5th day of the month.</p>
+<p><b>What is duration of the investment?</b></p>
+<p>People who are interested in liquidity or small-term gains would not be very keen about PPF because the duration for the investment is 15 years.</p>
+
+<p>However, the effective period works out to 16 years i.e., the year of opening the account and adding 15 years to it. The contribution made in the 16th financial year will not earn any interest but one can take advantage of the tax rebate. </p>
+<p>The account holder has an option to extend the PPF account for any period in a block of five years after the minimum duration elapses. The account holder can retain the account after maturity for any period without making any further deposits.</p>
+<p>The balance in the account will continue to earn interest at normal rate as admissible on PPF account till the account is closed.</p>
+<p><b>What is the minimum and maximum amount of deposit?</b></p>
+<p>The minimum deposit that you can make into a PPF account in a year is Rs 500. The maximum is Rs 70,000.</p>
+<p><b>Who can open a PPF account and where?</b></p>
+
+<p>A PPF account can be opened by an individual (salaried or non-salaried) on his own behalf or on behalf of a minor of whom he is the guardian or on behalf of a Hindu Undivided Family (HUF) of which he is a member or on behalf of an association of persons or a body of individuals. An individual can open only one account for himself.</p>
+<p>A PPF account can be opened with a minimum deposit of Rs 100 at any branch of the State Bank of India  [ <a target="_blank" href="http://money.rediff.com/quotes/state+bank+of+india"><span class="sm1">Get Quote</span></a> ] or branches of its associated banks like the State Bank of Mysore  [ <a target="_blank" href="http://money.rediff.com/quotes/state+bank+of+mysore"><span class="sm1">Get Quote</span></a> ] or Hyderabad. The account can also be opened at the branches of a few nationalized banks, like the Bank of India, Central Bank of India and Bank of Baroda  [ <a target="_blank" href="http://money.rediff.com/quotes/bank+of+baroda"><span class="sm1">Get Quote</span></a> ], and at any head post office or general post office.</p>
+
+<p><b>What are the tax benefits from PPF?</b></p>
+<p>The amount you invest is eligible for deduction under the Rs 100,000 limit of Section 80C. On maturity, the entire amount including the interest is non-taxable.</p>
+
+<p><b>Is it possible to withdraw the amount deposited at any time during the tenure?</b></p>
+<p>Yes. You can take a loan on the PPF from the third year of opening your account to the sixth year. So, if the account is opened during the financial year 2009-10, the first loan can be taken during financial year 2011-12 (the financial year is from April 1 to March 31).</p>
+<p>The loan amount will be up to a maximum of 25 per cent of the balance in your account at the end of the first financial year. You can make withdrawals during any one year from the sixth year. </p>
+<p>You are allowed to withdraw 50 per cent of the balance at the end of the fourth year, preceding the year in which the amount is withdrawn or the end of the preceding year whichever is lower. For e.g., if the account was opened in 2000-01, and the first withdrawal was made during 2006-07, the amount you can withdraw is limited to 50 per cent of the balance as on March 31, 2003, or March 31, 2006, whichever is lower.</p><br />
+
+
+<!--______________________________________________________________________________-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					
+					</div>
+
+					<!-- end bottom widgets -->
+
+				</div>
+				<!-- end container text -->
+				
+			</div>
+			<!-- end right shadow -->
+		
+		</div>
+		<!-- end left shadow -->
+		
+	</div>
+
+	<!-- end site content -->
+
+	
+</div>
+<!-- end container -->
+
+<!--______________________________________________________________________________-->
+
+
+
+<!-- begin footer -->
+<div class="footer">
+
+	
+		
+		<!-- begin footer pages -->
+		<div class="footer_widget_pages">
+		<br />
+
+			<ul>
+				<li><a href="index.aspx">Home</a></li>
+
+				<li><a href="#.html">Our Specialities</a></li>
+				<li><a href="#.html">Grow Money Here</a></li>
+
+				<li><a href="#.html">Screeners</a></li>
+				<li><a href="#.html">Must Reads</a></li>
+
+				<li><a href="Calculator.htm">Tools</a></li>
+			</ul>
+
+		</div>
+<br />
+
+		<!-- end footer pages -->
+		<div class="cleardiv"></div>
+
+	
+		
+		
+
+			
+
+<!-- end footer -->
+
+<script type="text/javascript">Cufon.now();</script>
+</body>
+
+<!-- Code Developed By Mrudang Mathuria -->
+</html>
